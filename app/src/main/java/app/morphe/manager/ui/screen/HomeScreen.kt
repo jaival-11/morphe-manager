@@ -57,13 +57,14 @@ fun HomeScreen(
     val isRefreshing by homeViewModel.isRefreshing.collectAsStateWithLifecycle()
 
     // Get greeting message
-    var greetingMessage by remember { mutableStateOf(context.getString(HomeAndPatcherMessages.getHomeMessage(context))) }
+    val sharedPrefs = context.getSharedPreferences("morphe_settings", android.content.Context.MODE_PRIVATE)
+    var greetingMessage by remember { mutableStateOf(if (sharedPrefs.getBoolean("show_patching_phrases", true)) context.getString(HomeAndPatcherMessages.getHomeMessage(context)) else "") }
 
     // Handle refresh with haptic feedback
     val onRefresh: () -> Unit = {
         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         HomeAndPatcherMessages.resetHomeMessage()
-        greetingMessage = context.getString(HomeAndPatcherMessages.getHomeMessage(context))
+        greetingMessage = if (sharedPrefs.getBoolean("show_patching_phrases", true)) context.getString(HomeAndPatcherMessages.getHomeMessage(context)) else ""
         homeViewModel.refresh()
     }
 

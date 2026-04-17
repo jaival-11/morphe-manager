@@ -76,6 +76,34 @@ fun AppearanceTabContent(
             onLanguageClick = { showTranslationInfoDialog.value = true }
         )
 
+        val sharedPrefs = context.getSharedPreferences("morphe_settings", android.content.Context.MODE_PRIVATE)
+        var showPatchingPhrases by remember { mutableStateOf(sharedPrefs.getBoolean("show_patching_phrases", true)) }
+
+        SectionTitle(
+            text = "Home Screen Header",
+            icon = Icons.Outlined.Dashboard
+        )
+
+        RichSettingsItem(
+            onClick = {
+                val newValue = !showPatchingPhrases
+                showPatchingPhrases = newValue
+                sharedPrefs.edit().putBoolean("show_patching_phrases", newValue).apply()
+            },
+            showBorder = true,
+            title = "Patching Phrases",
+            subtitle = "Show fun messages on the home screen",
+            leadingContent = {
+                MorpheIcon(icon = Icons.Outlined.ChatBubbleOutline)
+            },
+            trailingContent = {
+                Switch(
+                    checked = showPatchingPhrases,
+                    onCheckedChange = null
+                )
+            }
+        )
+
         // Theme Mode Section
         SectionTitle(
             text = stringResource(R.string.settings_appearance_theme),
